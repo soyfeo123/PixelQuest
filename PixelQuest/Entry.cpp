@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string>
 
-void DisplayInitError(std::string text) {
-	if (MessageBoxA(NULL, text.append("\nPress Yes for error info, press No to quit.").c_str(), "PixelQuest Init Error", MB_ICONERROR | MB_YESNO) == IDYES) {
+void DisplayInitError(const char* text) {
+	if (MessageBoxA(NULL, text, "PixelQuest Init Error", MB_ICONERROR | MB_YESNO) == IDYES) {
 		MessageBoxA(NULL, SDL_GetError(), "PixelQuest Init Error", MB_ICONERROR | MB_OK);
 	}
 }
@@ -31,7 +31,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,_I
 			DisplayInitError("Window creation error.");
 		}
 		else {
-			SDL_Event e; bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
+			application->sdlRenderer = SDL_CreateRenderer(application->sdlWindow, -1, SDL_RENDERER_ACCELERATED);
+
+			if (application->sdlRenderer == NULL) {
+				DisplayInitError("SDL Renderer creation error.");
+			}
+			else {
+				SDL_SetRenderDrawColor(application->sdlRenderer, 255, 255, 255, 255);
+				
+				SDL_Event e; bool quit = false; while (quit == false) { while (SDL_PollEvent(&e)) { if (e.type == SDL_QUIT) quit = true; } }
+			}
+
+			
 			
 		}
 	}
